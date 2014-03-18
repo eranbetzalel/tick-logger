@@ -1,0 +1,35 @@
+.autocomplete{
+  display: inline-block;
+  position: relative;
+}
+
+.autocomplete ul{
+  margin: 0;
+  padding: 0;
+  border: 1px #aaa solid;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.autocomplete li{
+  text-align: left;
+  list-style:none;
+  padding:0.2em;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.autocomplete li.active{
+  background-color: #EEF;
+}
+
+.autocomplete .highlight {
+  background-color: #EEF;
+}
+
+.autocomplete li.active .highlight {
+  background: #aac;
+  color: #fff;
+}

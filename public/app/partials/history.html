@@ -1,0 +1,12 @@
+<div class="pure-form queryPanel">
+    <label for="instrumentName">Instrument</label>
+    <autocomplete ng-model="instrumentName" data="instrumentNames" on-type="updateInstrumentNames"></autocomplete>
+    <label for="startDate">From</label>
+    <input name="startDate" type="date" ng-model="fromDate" />
+    <label for="endDate">To</label>
+    <input name="endDate" type="date" ng-model="toDate" />
+    <button class="pure-button pure-button-primary" ng-click="plotGraph()">Plot Graph</button>
+</div>
+<div>
+    <highchart id="tickGraph" class="tick-graph" config="chartConfig"></highchart>
+</div>

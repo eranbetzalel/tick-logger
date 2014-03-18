@@ -1,0 +1,36 @@
+﻿<!doctype html>
+<html lang="en" ng-app>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tick Logger</title>
+
+    <link rel="stylesheet" href="//yui.yahooapis.com/pure/0.4.2/pure-min.css">
+    <link rel="stylesheet" href="app/css/autoComplete.css">
+    <link rel="stylesheet" href="app/css/app.css">
+</head>
+<body>
+    <div id="layout" class="pure-g">
+        <div class="pure-u-1 header">
+            <div id="menu" class="pure-menu pure-menu-open pure-menu-horizontal">
+                <a href="#" class="pure-menu-heading">Tick Logger</a>
+                <ul ng-controller="NavigationCtrl">
+                    <li ng-class="{ 'pure-menu-selected': isCurrentPath('/history') }"><a href="#/history">History Graph</a></li>
+                    <li ng-class="{ 'pure-menu-selected': isCurrentPath('/graph') }"><a href="#/graph">Real Time Graph</a></li>
+                    <li ng-class="{ 'pure-menu-selected': isCurrentPath('/statistics') }"><a href="#/statistics">Statistics</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pure-u-1 content" ng-view></div>
+
+        <div class="pure-u-1 footer">
+            <div>Copyright © 2014 Eran Betzalel - All rights reserved</div>
+            <div class="footer-links"><a href="https://github.com/eranbetzalel/TickLogger">GitHub Source</a></div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js" data-main="app/js/main"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "TickLogger",
+  "version": "0.1",
+  "description": "Logger and Viewer for financial ticks.",
+  "main": "app.js",
+  "author": {
+    "name": "Eran Betzalel"
+  },
+  "dependencies": {
+    "express": "3.*",
+    "winston": "~0.7.2"
+  }
+}
