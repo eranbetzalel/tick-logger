@@ -1,5 +1,5 @@
 var config = {
-  httpPort: parseInt(process.env.PORT, 10) || 3000,
+  httpPort: parseInt(process.env.PORT, 10) || 8080,
   sessionSecret: 'DefaultSecret',
   queryStoreName: 'Test Store',
 

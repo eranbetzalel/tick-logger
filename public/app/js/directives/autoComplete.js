@@ -3,7 +3,6 @@ define(['angular'], function(angular, services) {
 
   return angular.module('autoComplete-ng', [])
     .directive('autocomplete', function() {
-      /* --- Made by justgoscha and licensed under MIT license --- */
       var index = -1;
 
       return {
@@ -234,7 +233,7 @@ define(['angular'], function(angular, services) {
       }
     })
     .directive('suggestion', function() {
-      /* --- Made by justgoscha and licensed under MIT license --- */
+
       return {
         restrict: 'A',
         require: '^autocomplete', // ^look for controller on parents element

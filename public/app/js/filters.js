@@ -3,7 +3,6 @@ define(['angular'], function (angular) {
   
   angular.module('tickLoggerApp.filters', [])
     .filter('highlight', function ($sce) {
-      /* --- Made by justgoscha and licensed under MIT license --- */
 
       return function (input, searchParam) {
         if (searchParam) {
