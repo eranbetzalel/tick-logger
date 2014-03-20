@@ -1,60 +1,29 @@
-var http = require('http')
-  , express = require('express')
-  , log = require('winston')
+var cluster = require('cluster')
   , packageJson = require('./package.json')
   , config = require('./config')
-  , TickEngine = require('./tickEngine');
+  , log = require('./core/util/clusterLogger');
 
-var title = 'Tick Logger Server v' + packageJson.version;
+var appTitle = 'Tick Logger Server v' + packageJson.version + ' (PID:' + process.pid + ')';
 
-process.title = title;
+process.title = appTitle;
 
-log.info('----------------- Starting ' + title + '...');
+log.info('Starting %s...', appTitle);
 
-var app = express();
-
-app.configure(function () {
-  app.use(express.logger('dev'));
-  app.use(express.favicon('public/favicon.ico'));
-  app.use(express.static(__dirname + '/public'));
-  app.use(express.cookieParser());
-  app.use(express.session({secret: config.sessionSecret}));
-  app.use(app.router);
-  app.use(express.errorHandler());
+cluster.setupMaster({
+  exec : 'appNode.js',
 });
 
-var tickEngine = new TickEngine();
-
-tickEngine.start();
-
-app.get('/api/instruments', function (req, res) {
-  tickEngine.queryStore.getInstrumentNamesByQuery(req.query.query, function (instrumentNames) {
-    res.json(instrumentNames);
-  });
+for (var i = 0; i < config.numberOfWorkers; i++) {
+  cluster.fork();
+}
+ 
+cluster.on('exit', function(worker, code, signal) {
+  log.warn(
+    'Worker (PID: %d) died (%s) - restarting...',
+    worker.process.pid, signal || code);
+  cluster.fork();
 });
 
-app.get('/api/:instrumentName/ticks', function (req, res) {
-  if(!req.query.from) {
-    res.statusCode = 404;
-
-    return res.send('Missing start date.');
-  }
-
-  if(!req.query.to) {
-    res.statusCode = 404;
-
-    return res.send('Missing end date.');
-  }
-
-  tickEngine.queryStore.getTicks(
-    req.params.instrumentName, 
-    req.query.from, 
-    req.query.to,
-    function (ticks) {
-      res.json(ticks);
-    });
-});
-
-http.createServer(app).listen(config.httpPort, function() {
-  log.info('Tick Logger web server started on http://localhost:' + config.httpPort + '.');
+cluster.on('online', function(worker) {
+  log.info('Worker (PID: %d) started.', worker.process.pid);
 });

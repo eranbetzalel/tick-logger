@@ -1,4 +1,4 @@
-﻿var log = require('winston');
+﻿var log = require('./util/clusterLogger');
 
 exports = module.exports = Adapter;
 

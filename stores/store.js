@@ -1,5 +1,4 @@
 ﻿var util = require('util')
-  , log = require('winston')
   , pubsub = require('../core/util/pubsub')
   , Adapter = require('../core/adapter');
 
