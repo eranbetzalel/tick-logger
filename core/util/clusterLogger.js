@@ -25,8 +25,8 @@ if(cluster.isMaster) {
 
       if (!logMessage)
         return;
-      
-      //winston.log.apply(this, logMessage);
+
+      winston.log.apply(this, logMessage);
     });
   });
 }
@@ -37,7 +37,7 @@ Object.keys(winston.levels).forEach(function (level) {
     exports[level] = function () {
       var logMessageArray = createLogMessageArray(level, arguments);
 
-      //winston.log.apply(this, logMessageArray);
+      winston.log.apply(this, logMessageArray);
     }
   }
   else {
