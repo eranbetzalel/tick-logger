@@ -70,10 +70,11 @@ TBD.
 
 - Statistics
 - Live tick graph
+- TCP/Text feeder
 - FIX feeder
 - Redis store
-- Clustering
-- Server scalability
+- ~~Clustering~~
+- ~~Server scalability~~
 - Authentication
 - Support Firefox and maybe IE :)
 
