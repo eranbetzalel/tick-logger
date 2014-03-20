@@ -75,6 +75,8 @@ TBD.
 - Redis store
 - ~~Clustering~~
 - ~~Server scalability~~
+- Performance tests
+- Performance tuning
 - Authentication
 - Support Firefox and maybe IE :)
 
