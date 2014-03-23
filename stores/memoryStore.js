@@ -35,6 +35,7 @@ MemoryStore.prototype.onTickReceived = function (instrumentName, tick) {
   });
 }
 
+//  TODO: support clustered enviroment
 MemoryStore.prototype.getInstrumentNamesByQuery = function (query, fn) {
   var instrumentNames = Object.keys(this.instrumentTicks);
 
@@ -47,6 +48,7 @@ MemoryStore.prototype.getInstrumentNamesByQuery = function (query, fn) {
   return fn(instrumentNames);
 }
 
+//  TODO: support clustered enviroment
 MemoryStore.prototype.getTicks = function (instrumentName, fromDate, toDate, fn) {
   var self = this;
 
@@ -56,12 +58,8 @@ MemoryStore.prototype.getTicks = function (instrumentName, fromDate, toDate, fn)
     if(!instrumentTicks)
       return fn(null);
 
-    //  TODO: use chuncked data
-    //  TODO: use Google's protobuf
     var ticks = instrumentTicks.getTicksByDateRange(toDate, fromDate);
 
-    return fn(ticks.map(function (tick) {
-      return [ tick.createdAt, tick.price ];
-    }));
+    return fn(ticks);
   });
 }

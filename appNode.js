@@ -16,6 +16,10 @@ app.configure(function () {
   app.use(express.errorHandler());
 });
 
+process.on('uncaughtException', function (err) {
+  log.error('An uncaught exception occurred.\r\n' + err.stack);
+});
+
 var tickEngine = new TickEngine();
 
 tickEngine.start();
@@ -39,12 +43,19 @@ app.get('/api/:instrumentName/ticks', function (req, res) {
     return res.send('Missing end date.');
   }
 
+  //  TODO: use chuncked data
+  //  TODO: use Google's protobuf
   tickEngine.queryStore.getTicks(
     req.params.instrumentName, 
     req.query.from, 
     req.query.to,
     function (ticks) {
-      res.json(ticks);
+      var ticksDTO =
+        ticks.map(function (tick) {
+          return [ tick.createdAt, tick.price ];
+        });
+
+      res.json(ticksDTO);
     });
 });
 

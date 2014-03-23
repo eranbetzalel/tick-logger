@@ -1,7 +1,9 @@
 ﻿exports = module.exports = Tick;
 
 function Tick(tickData) {
-  this.amount = tickData.amount;
+  if(!tickData.price)
+    throw new Error('Could not initialize tick with null price.');
+
   this.price = tickData.price;
-  this.createdAt = Date.now();
+  this.createdAt = tickData.createdAt || Date.now();
 }

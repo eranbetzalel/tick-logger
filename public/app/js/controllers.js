@@ -1,6 +1,12 @@
 define(['angular', 'services', 'moment'], function (angular, services, moment) {
   'use strict';
 
+  var timezoneOffsetMilli = (new Date()).getTimezoneOffset() * -1  * 60 * 1000;
+
+  function toLocalTime(date) {
+    return date + timezoneOffsetMilli;
+  }
+
   return angular.module('tickLoggerApp.controllers', ['tickLoggerApp.services'])
     .controller('NavigationCtrl', ['$scope', '$location', function ($scope, $location) {
 
@@ -33,12 +39,16 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
         $scope.chartConfig.series = [];
 
         api.getTicks($scope.instrumentName, fromDateUtc, toDateUtc).success(function (ticks) {
-          
+
           $scope.chartConfig.title = $scope.instrumentName + ' Stock Price';
           
           $scope.chartConfig.series.push({
             name: $scope.instrumentName,
-            data: ticks
+            data: ticks.map(function (tick) {
+              tick[0] = toLocalTime(tick[0]);
+
+              return tick;
+            })
           });
 
           $scope.chartConfig.loading = false;

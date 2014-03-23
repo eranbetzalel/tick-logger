@@ -29,4 +29,3 @@ TickCollection.prototype.getTicksByDateRange = function (fromDate, toDate) {
 
   return this.ticks.slice(firstTickIndex, lastTickIndex);
 }
-

@@ -6,7 +6,7 @@
 
 exports = module.exports = Feeder;
 
-var workerProcessKey = config.workerStartIndex + (cluster.worker.id % config.numberOfWorkers);
+var workerProcessKey;
 var processInstrumentNames = {};
 var publishTick = pubsub.createTopicPublisher('tick');
 
@@ -59,3 +59,12 @@ function getStringHashCode(str) {
 
   return res;
 };
+
+if(cluster.isMaster) {
+  //  Support non-cluster run
+  Feeder.prototype.shouldProcessInstrumentName = function () { return true; }
+}
+else {
+  //  Normal cluster run
+  workerProcessKey = config.workerStartIndex + (cluster.worker.id % config.numberOfWorkers);
+}

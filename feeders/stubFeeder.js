@@ -4,7 +4,6 @@
 
 exports = module.exports = StubFeeder;
 
-
 function StubFeeder(name, options) {
   Feeder.call(this, name, options);
 }
@@ -28,15 +27,22 @@ StubFeeder.prototype.onFeederStop = function () {
 StubFeeder.prototype.addTickGenerator = function (instrumentName) {
   var self = this;
 
+  var pipDecimals = this.options.pipDecimals | 4;
+
   var tickGenerator =
     setInterval(function () {
       var tick = new Tick({
-        amount: Math.floor((Math.random() * 1000) + 10),
-        price: Math.random() * 5
+        price: roundNumber((Math.random() * 0.1) + 2.3, pipDecimals)
       });
 
       self.processTick(instrumentName, tick);
     }, this.options.tickGenerationInterval);
 
   this.tickGenerators.push(tickGenerator);
+}
+
+function roundNumber(number, decimals) {
+  var decimalsMultiplier = Math.pow(10, decimals);
+
+  return (Math.round(number * decimalsMultiplier) / decimalsMultiplier);
 }
