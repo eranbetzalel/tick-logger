@@ -12,19 +12,16 @@ The web interface supplies 3 major features:
 
 ### Installation
 
-Just install NodeJS lastest version from http://nodejs.org/ and you are good to go.
-
-### Usage
-
-1. Download the application to a new 'tick-logger' directory
-2. Open a terminal (command prompt) in the above directory
-3. Run: `npm install`
-4. Run: `node app.js`
-5. Open Google Chrome and browse to http://locahost:8080
+  1. Install NodeJS lastest version from http://nodejs.org/
+  2. Download the application to a new 'tick-logger' directory
+  3. Open a terminal (command prompt) in the above directory
+  4. Run: `npm install`
+  5. Run: `node app.js`
+  6. Open Google Chrome and browse to http://locahost:8080/
 
 ### Configuration
 
-You can find Tick Logger configuration at the 'config.js' file.
+  You can find Tick Logger's configuration at the 'config.js' file.
 
 #### Web interface
 
@@ -84,7 +81,7 @@ URL: http://tick-logger.herokuapp.com/
 
 #### Requests, feedbacks and Suggestions are very welcome :)
 
-###Enjoy!
+### Enjoy!
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/eranbetzalel/tick-logger/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
