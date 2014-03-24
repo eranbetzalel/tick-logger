@@ -56,7 +56,9 @@ For example, when running the application on 3 servers, each with 8 workers, wil
 
 ### Live demo
 
-TBD.
+The demo server is generating ticks called Test_0 to Test_9 - please use these instrument names when inquiring for ticks. 
+
+URL: http://tick-logger.herokuapp.com/
 
 
 ### Credits
@@ -70,9 +72,9 @@ TBD.
 
 - Statistics
 - Live tick graph
-- TCP/Text feeder
+- ~~TCP/Text feeder~~
 - FIX feeder
-- Redis store
+- ~~Redis store~~
 - ~~Clustering~~
 - ~~Server scalability~~
 - Performance tests
