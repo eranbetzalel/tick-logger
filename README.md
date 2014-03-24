@@ -56,7 +56,7 @@ For example, when running the application on 3 servers, each with 8 workers, wil
 
 ### Live demo
 
-The demo server is generating ticks called Test_0 to Test_9 - please use these instrument names when inquiring for ticks. 
+The demo server is generating ticks for instrument names called Test_0 to Test_9 - please use these when inquiring for ticks.
 
 URL: http://tick-logger.herokuapp.com/
 
