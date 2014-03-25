@@ -56,7 +56,8 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
       }
 
       $scope.chartConfig = {
-        useHighStocks: true
+        useHighStocks: true,
+        noData: 'No ticks data to display'
       }
     }])
 

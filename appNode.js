@@ -50,6 +50,9 @@ app.get('/api/:instrumentName/ticks', function (req, res) {
     req.query.from, 
     req.query.to,
     function (ticks) {
+      if(!ticks)
+        return res.json([]);
+
       var ticksDTO =
         ticks.map(function (tick) {
           return [ tick.createdAt, tick.price ];
