@@ -26,7 +26,7 @@ tickEngine.start();
 
 app.get('/api/instruments', function (req, res) {
   tickEngine.queryStore.getInstrumentNamesByQuery(req.query.query, function (instrumentNames) {
-    res.json(instrumentNames);
+    res.json(instrumentNames.sort().slice(0, 10));
   });
 });
 
