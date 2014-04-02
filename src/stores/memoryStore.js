@@ -1,4 +1,5 @@
 ﻿var util = require('util')
+  , config = require('../config')
   , Store = require('./store')
   , TickCollection = require('../models/tickCollection');
 
@@ -11,6 +12,9 @@ function MemoryStore(name, options) {
 util.inherits(MemoryStore, Store);
 
 MemoryStore.prototype.onStoreStart = function () {
+  if(config.numberOfWorkers > 1 || config.totalNumberOfWorkers > 1)
+    throw new Error('MemoryStore does not support multiple workers enviroment.');
+
   this.instrumentTicks = {};
 }
 
@@ -35,7 +39,6 @@ MemoryStore.prototype.onTickReceived = function (instrumentName, tick) {
   });
 }
 
-//  TODO: support clustered enviroment
 MemoryStore.prototype.getInstrumentNamesByQuery = function (query, fn) {
   var instrumentNames = Object.keys(this.instrumentTicks);
 
@@ -48,7 +51,6 @@ MemoryStore.prototype.getInstrumentNamesByQuery = function (query, fn) {
   return fn(instrumentNames);
 }
 
-//  TODO: support clustered enviroment
 MemoryStore.prototype.getTicks = function (instrumentName, fromDate, toDate, fn) {
   var self = this;
 

@@ -3,7 +3,7 @@ Tick Logger
 
 Tick Logger captures and stores financial ticks (quotes).
 
-This application is very plug-in oriented. You can simply use or implement an adapter for either receiving quotes (feeder plugin) or storing them (store plugin).
+This application is very plug-in oriented. You can simply use or implement an adapter for either receiving quotes (feeder plug-in) or storing them (store plug-in).
 
 The web interface supplies 3 major features:
   - Historical ticks graph - query an instrument for its past ticks.
@@ -12,7 +12,7 @@ The web interface supplies 3 major features:
 
 ### Installation
 
-  1. Install NodeJS lastest version from http://nodejs.org/
+  1. Install NodeJS latest version from http://nodejs.org/
   2. Download the application to a new 'tick-logger' directory
   3. Open a terminal (command prompt) in the above directory
   4. Run: `npm install`
@@ -28,13 +28,16 @@ The web interface supplies 3 major features:
   - httpPort - web interface port.
   - sessionSecret - web session secret **(default value must be changed)**.
 
+
 #### Scalability
 
-This application is scaleable via multiple instances and or servers. Each worker (node instance) receives a unique ID, which allows it to process a different set of instruments, thus insuring collision free parallel processing.
+This application is scalable via multiple instances and or servers. Each worker (node instance) receives a unique ID, which allows it to process a different set of instruments, thus insuring collision free parallel processing.
 
   - localWorkerStartIndex - The starting ID number for this server node instances.
   - localNumberOfWorkers - The number of node instances on this server.
-  - totalNumberOfWorkers - The sum of configured node instances accross the servers.
+  - totalNumberOfWorkers - The sum of configured node instances across the servers.
+
+Please note, the recommended amount of workers is the same as the number of the server's CPUs.
 
 For example, when running the application on 3 servers, each with 8 workers, will create the following configurations:
 

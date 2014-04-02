@@ -1,13 +1,11 @@
-var cpuCount = require('os').cpus().length;
-
 var config = {
   httpPort: parseInt(process.env.PORT, 10) || 8080,
   sessionSecret: 'DefaultSecret',
   queryStoreName: 'Test Store',
 
   workerStartIndex: 0,
-  numberOfWorkers: cpuCount,
-  totalNumberOfWorkers: cpuCount,
+  numberOfWorkers: 1,
+  totalNumberOfWorkers: 1,
 
   feeders: {
     'Test Feeder' : { 
@@ -15,7 +13,8 @@ var config = {
       options: {
         instrumentBaseName: 'Test',
         numberOfInstruments: 10,
-        tickGenerationInterval: 10
+        tickGenerationInterval: 10,
+        pipDecimals: 4
       }
     }
   },

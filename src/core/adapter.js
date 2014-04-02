@@ -16,7 +16,16 @@ Adapter.prototype.start = function () {
 
   log.debug(this.toString()  + ' starting...');
 
-  this.onStart && this.onStart();
+  try {
+    this.onStart && this.onStart();
+  }
+  catch(e) {
+    log.error(
+      '%s: failed to start.\r\n%s', this.name, e.toString());
+
+    return;
+  }
+
   this.state = 'started';
 
   log.info(this.toString()  + ' started.');
@@ -31,7 +40,16 @@ Adapter.prototype.stop = function () {
 
   log.debug(this.toString()  + ' stopping...');
 
-  this.onStop && this.onStop();
+  try {
+    this.onStop && this.onStop();
+  }
+  catch(e) {
+    log.error(
+      '%s: failed to stop.\r\n%s', this.name, e.toString());
+
+    return;
+  }
+
   this.state = 'stopped';
 
   log.info(this.toString()  + ' stopped.');
