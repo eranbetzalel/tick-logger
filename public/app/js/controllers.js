@@ -3,9 +3,29 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
 
   var timezoneOffsetMilli = (new Date()).getTimezoneOffset() * -1  * 60 * 1000;
 
-  function toLocalTime(date) {
+  function toLocalTime (date) {
     return date + timezoneOffsetMilli;
   }
+
+  function getColorByInstrumentName (instrumentName) {
+    var colors = [
+      '#2f7ed8', '#0d233a', '#8bbc21', '#910000', '#1aadce',
+      '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a'];
+
+    var chosenColor = colors[getStringHashCode(instrumentName) % colors.length]
+
+    return chosenColor;
+  }
+
+  function getStringHashCode(str) {
+    var res = 0;
+    var len = str.length;
+
+    for (var i = 0; i < len; i++)
+      res = res * 31 + str.charCodeAt(i);
+
+    return res;
+  };
 
   return angular.module('tickLoggerApp.controllers', ['tickLoggerApp.services'])
     .controller('NavigationCtrl', ['$scope', '$location', function ($scope, $location) {
@@ -41,9 +61,10 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
         api.getTicks($scope.instrumentName, fromDateUtc, toDateUtc).success(function (ticks) {
 
           $scope.chartConfig.title = $scope.instrumentName + ' Stock Price';
-          
+
           $scope.chartConfig.series.push({
             name: $scope.instrumentName,
+            color: getColorByInstrumentName($scope.instrumentName),
             data: ticks.map(function (tick) {
               tick[0] = toLocalTime(tick[0]);
 

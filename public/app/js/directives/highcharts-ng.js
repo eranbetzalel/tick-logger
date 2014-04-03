@@ -80,30 +80,35 @@ angular.module('highcharts-ng', [])
         mergedOptions = defaultOptions;
       }
       mergedOptions.chart.renderTo = element[0];
+
       angular.forEach(axisNames, function(axisName) {
-        if (config[axisName]) {
-          prependMethod(mergedOptions.chart.events, 'selection', function(e){
-            var thisChart = this;
-            if (e[axisName]) {
-              scope.$apply(function () {
-                scope.config[axisName].currentMin = e[axisName][0].min;
-                scope.config[axisName].currentMax = e[axisName][0].max;
-              });
-            } else {
-              //handle reset button - zoom out to all
-              scope.$apply(function () {
-                scope.config[axisName].currentMin = thisChart[axisName][0].dataMin;
-                scope.config[axisName].currentMax = thisChart[axisName][0].dataMax;
-              });
-            }
-          });
-
-          prependMethod(mergedOptions.chart.events, 'addSeries', function(e){
-            scope.config[axisName].currentMin = this[axisName][0].min || scope.config[axisName].currentMin;
-            scope.config[axisName].currentMax = this[axisName][0].max || scope.config[axisName].currentMax;
-          });
-
+        if(angular.isDefined(config[axisName])) {
           mergedOptions[axisName] = angular.copy(config[axisName]);
+
+          if(angular.isDefined(config[axisName].currentMin) ||
+              angular.isDefined(config[axisName].currentMax)) {
+
+            prependMethod(mergedOptions.chart.events, 'selection', function(e){
+              var thisChart = this;
+              if (e[axisName]) {
+                scope.$apply(function () {
+                  scope.config[axisName].currentMin = e[axisName][0].min;
+                  scope.config[axisName].currentMax = e[axisName][0].max;
+                });
+              } else {
+                //handle reset button - zoom out to all
+                scope.$apply(function () {
+                  scope.config[axisName].currentMin = thisChart[axisName][0].dataMin;
+                  scope.config[axisName].currentMax = thisChart[axisName][0].dataMax;
+                });
+              }
+            });
+
+            prependMethod(mergedOptions.chart.events, 'addSeries', function(e){
+              scope.config[axisName].currentMin = this[axisName][0].min || scope.config[axisName].currentMin;
+              scope.config[axisName].currentMax = this[axisName][0].max || scope.config[axisName].currentMax;
+            });
+          }
         }
       });
 
@@ -159,7 +164,9 @@ angular.module('highcharts-ng', [])
         var prevSeriesOptions = {};
 
         var processSeries = function(series) {
+          var i;
           var ids = [];
+
           if(series) {
             var setIds = ensureIds(series);
             if(setIds) {
@@ -186,27 +193,32 @@ angular.module('highcharts-ng', [])
               }
               prevSeriesOptions[s.id] = chartOptionsWithoutEasyOptions(s);
             });
-          }
 
-          //Now remove any missing series
-          for(var i = chart.series.length - 1; i >= 0; i--) {
-            var s = chart.series[i];
-            if (indexOf(ids, s.options.id) < 0) {
-              s.remove(false);
+            //  Shows no data text if all series are empty
+            if(scope.config.noData) {
+              var chartContainsData = false;
+
+              for(i = 0; i < series.length; i++) {
+                if (series[i].data && series[i].data.length > 0) {
+                  chartContainsData = true;
+
+                  break;
+                }
+              }
+
+              if (!chartContainsData) {
+                chart.showLoading(scope.config.noData);
+              } else {
+                chart.hideLoading();
+              }
             }
           }
 
-          //  Shows no data text if all series are empty
-          if(scope.config.noData) {
-            var chartContainsData =
-              chart.series.some(function (series) {
-                return series.options.data && series.options.data.length > 0;
-              });
-
-            if(!chartContainsData) {
-              chart.showLoading(scope.config.noData);
-            } else {
-              chart.hideLoading();
+          //Now remove any missing series
+          for(i = chart.series.length - 1; i >= 0; i--) {
+            var s = chart.series[i];
+            if (indexOf(ids, s.options.id) < 0) {
+              s.remove(false);
             }
           }
 
@@ -265,7 +277,8 @@ angular.module('highcharts-ng', [])
           }
         });
 
-        scope.$watch('config.useHighStocks', function (useHighStocks) {
+        scope.$watch('config.useHighStocks', function (useHighStocks, oldUseHighStocks) {
+          if(useHighStocks === oldUseHighStocks) return;
           initChart();
         });
 
@@ -289,10 +302,14 @@ angular.module('highcharts-ng', [])
 
         scope.$watch('config.size', function (newSize, oldSize) {
           if(newSize === oldSize) return;
-          if(newSize && newSize.width && newSize.height) {
-            chart.setSize(newSize.width, newSize.height);
+          if(newSize) {
+            chart.setSize(newSize.width || undefined, newSize.height || undefined);
           }
         }, true);
+
+        scope.$on('highchartsng.reflow', function () {
+          chart.reflow();
+        });
 
         scope.$on('$destroy', function() {
           if (chart) chart.destroy();
