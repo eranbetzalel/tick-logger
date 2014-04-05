@@ -50,8 +50,8 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
         if(!$scope.instrumentName || !$scope.fromDate || !$scope.toDate)
           return alert('Please fill-in all query data.');
 
-        var fromDateUtc = moment.utc($scope.fromDate).valueOf();
-        var toDateUtc = moment.utc($scope.toDate).valueOf();
+        var fromDateUtc = moment($scope.fromDate).utc().valueOf();
+        var toDateUtc = moment($scope.toDate).utc().valueOf();
 
         $scope.chartConfig.loading = true;
 
