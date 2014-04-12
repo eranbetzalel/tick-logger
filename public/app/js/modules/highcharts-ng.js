@@ -1,3 +1,4 @@
+//	TODO: convert to lighter directive
 'use strict';
 /*global angular: false, Highcharts: false */
 

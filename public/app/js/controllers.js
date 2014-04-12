@@ -1,6 +1,7 @@
-define(['angular', 'services', 'moment'], function (angular, services, moment) {
+define(['angular', 'services', 'moment', 'jquery'], function (angular, services, moment, $) {
   'use strict';
 
+  //  TODO: move it to a utility module?
   var timezoneOffsetMilli = (new Date()).getTimezoneOffset() * -1  * 60 * 1000;
 
   function toLocalTime (date) {
@@ -27,6 +28,14 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
     return res;
   };
 
+  var TicksQueryCtrl = function ($scope, api) {
+    $scope.updateInstrumentNames = function (typed) {
+      api.getInstruments(typed).success(function (instrumentNames) {
+        $scope.instrumentNames = instrumentNames;
+      });
+    }
+  };
+
   return angular.module('tickLoggerApp.controllers', ['tickLoggerApp.services'])
     .controller('NavigationCtrl', ['$scope', '$location', function ($scope, $location) {
 
@@ -35,16 +44,18 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
       };
     }])
 
-    .controller('HistoryCtrl', ['$scope', '$http', 'WebApiService', function ($scope, $http, api) {
+    .controller('HistoryCtrl', ['$scope', '$injector', 'WebApiService', function ($scope, $injector, api) {
+
+      $injector.invoke(TicksQueryCtrl, this, {$scope: $scope, api: api});
 
       $scope.fromDate = moment().format('YYYY-MM-DD');
       $scope.toDate = moment().add('days', 1).format('YYYY-MM-DD');
 
-      $scope.updateInstrumentNames = function (typed) {
-        api.getInstruments(typed).success(function (instrumentNames) {
-          $scope.instrumentNames = instrumentNames;
-        });
+      $scope.chartConfig = {
+        useHighStocks: true
       }
+
+      $scope.chartConfig.noData = 'No ticks data to display';
 
       $scope.plotGraph = function () {
         if(!$scope.instrumentName || !$scope.fromDate || !$scope.toDate)
@@ -75,14 +86,64 @@ define(['angular', 'services', 'moment'], function (angular, services, moment) {
           $scope.chartConfig.loading = false;
         });
       }
-
-      $scope.chartConfig = {
-        useHighStocks: true,
-        noData: 'No ticks data to display'
-      }
     }])
 
-    .controller('GraphCtrl', ['$scope', function ($scope) {
+    .controller('GraphCtrl', ['$scope', '$injector', 'WebApiService', function ($scope, $injector, api) {
+      $injector.invoke(TicksQueryCtrl, this, {$scope: $scope, api: api});
+
+      $('#tickGraph').highcharts('StockChart', {
+        rangeSelector: {
+          buttons: [{
+            count: 1,
+            type: 'minute',
+            text: '1M'
+          }, {
+            count: 5,
+            type: 'minute',
+            text: '5M'
+          }, {
+            type: 'all',
+            text: 'All'
+          }],
+          inputEnabled: false,
+          selected: 0
+        },
+        series : [{
+          name : 'Random data',
+          data : []
+        }]
+      });
+
+      var chart = $('#tickGraph').highcharts();
+
+      $scope.plotGraph = function () {
+        if(!$scope.instrumentName)
+          return alert('Please choose an instrument.');
+
+        var instrumentSeries = {
+          name: $scope.instrumentName,
+          color: getColorByInstrumentName($scope.instrumentName),
+          data: []
+        };
+
+        chart.setTitle($scope.instrumentName + ' Stock Price', false);
+        chart.addSeries(instrumentSeries, false, false);
+
+        chart.showLoading('Waiting for ticks data...');
+
+        var receivedTicks = 0;
+
+        api.getLiveTicks($scope.instrumentName, function (tick) {
+          var shouldShift = receivedTicks > 100;
+
+          chart.series[0].addPoint([toLocalTime(tick.createdAt), tick.price], true, shouldShift, false);
+
+          receivedTicks++;
+
+          if(receivedTicks > 0)
+            chart.hideLoading();
+        });
+      }
     }])
 
     .controller('StatisticsCtrl', ['$scope', function ($scope) {

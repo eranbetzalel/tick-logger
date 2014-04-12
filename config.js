@@ -13,7 +13,7 @@ var config = {
       options: {
         instrumentBaseName: 'Test',
         numberOfInstruments: 10,
-        tickGenerationInterval: 10,
+        tickGenerationInterval: 100,
         pipDecimals: 4
       }
     }
@@ -23,7 +23,7 @@ var config = {
     'Test Store' : { 
       type: 'memoryStore',
       options: {
-        limitTicksPerInstrument : 500
+        limitTicksPerInstrument : 100000
       }
     }
   }

@@ -2,12 +2,18 @@ var http = require('http')
   , express = require('express')
   , log = require('./core/util/clusterLogger')
   , config = require('./config')
-  , TickEngine = require('./tickEngine');
+  , TickEngine = require('./tickEngine')
+  , liveTicksService = require('./liveTicksService');
+
+process.on('uncaughtException', function (err) {
+  log.error('An uncaught exception occurred.\r\n' + err.stack);
+});
 
 var app = express();
 
 app.configure(function () {
   app.use(express.logger('dev'));
+  app.use(express.compress());
   app.use(express.favicon('public/favicon.ico'));
   app.use(express.static(__dirname + '/public'));
   app.use(express.cookieParser());
@@ -16,13 +22,13 @@ app.configure(function () {
   app.use(express.errorHandler());
 });
 
-process.on('uncaughtException', function (err) {
-  log.error('An uncaught exception occurred.\r\n' + err.stack);
-});
+var appServer = http.createServer(app);
 
 var tickEngine = new TickEngine();
 
 tickEngine.start();
+
+liveTicksService.listen(appServer);
 
 app.get('/api/instruments', function (req, res) {
   tickEngine.queryStore.getInstrumentNamesByQuery(req.query.query, function (instrumentNames) {
@@ -62,6 +68,6 @@ app.get('/api/:instrumentName/ticks', function (req, res) {
     });
 });
 
-http.createServer(app).listen(config.httpPort, function() {
+appServer.listen(config.httpPort, function() {
   log.info('Tick Logger web server started on http://localhost:' + config.httpPort + '.');
 });

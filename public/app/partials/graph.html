@@ -1,1 +1,8 @@
-<p>TBD</p>
+<div class="pure-form queryPanel">
+    <label for="instrumentName">Instrument</label>
+    <autocomplete ng-model="instrumentName" data="instrumentNames" on-type="updateInstrumentNames" click-activation="true" attr-placeholder="Start typing..."></autocomplete>
+    <button class="pure-button pure-button-primary" ng-click="plotGraph()">Plot Graph</button>
+</div>
+<div>
+    <div id="tickGraph" class="tick-graph"></div>
+</div>
