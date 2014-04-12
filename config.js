@@ -13,7 +13,7 @@ var config = {
       options: {
         instrumentBaseName: 'Test',
         numberOfInstruments: 10,
-        tickGenerationInterval: 100,
+        tickGenerationInterval: 1000,
         pipDecimals: 4
       }
     }
